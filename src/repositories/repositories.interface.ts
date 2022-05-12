@@ -17,3 +17,12 @@ export interface ICommit {
     message: string;
   };
 }
+
+export interface IFile {
+  name: string;
+  path: string;
+  sha: string;
+  type: string;
+  downloadUrl: string;
+  size: number;
+}

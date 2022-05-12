@@ -10,7 +10,12 @@ export class RepositoriesController {
   }
 
   @Get('/:profile/:repo')
-  getcommits(@Param('profile') profile: string, @Param('repo') repo: string) {
+  getCommits(@Param('profile') profile: string, @Param('repo') repo: string) {
     return this.repositoriesService.getCommits(profile, repo);
+  }
+
+  @Get('/:profile/:repo/contents')
+  getContents(@Param('profile') profile: string, @Param('repo') repo: string) {
+    return this.repositoriesService.getContentList(profile, repo);
   }
 }

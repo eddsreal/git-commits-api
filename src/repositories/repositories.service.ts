@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { AxiosError, AxiosResponse } from 'axios';
-import { ICommit, IRepository } from './repositories.interface';
+import { ICommit, IFile, IRepository } from './repositories.interface';
 import config from '../config';
 import { lastValueFrom } from 'rxjs';
 
@@ -60,5 +60,30 @@ export class RepositoriesService {
       }));
     }
     throw new NotFoundException('Commits not found');
+  }
+
+  async getContentList(profile: string, repo: string): Promise<IFile[]> {
+    const { data }: AxiosResponse<IFile[]> = await lastValueFrom(
+      this.axios.get<IFile[]>(
+        `https://api.github.com/repos/${profile}/${repo}/contents`,
+      ),
+    ).catch((err: AxiosError) => {
+      Logger.error(
+        //  prettier-ignore
+        `Github Request Error Message: ${JSON.stringify(err.message)} stack: ${JSON.stringify(err.stack)}`,
+      );
+      throw new NotFoundException('Files not found');
+    });
+    if (data.length > 0) {
+      return data.map((file: IFile) => ({
+        name: file.name,
+        path: file.path,
+        sha: file.sha,
+        type: file.type,
+        downloadUrl: file.downloadUrl,
+        size: file.size,
+      }));
+    }
+    throw new NotFoundException('Files not found');
   }
 }
