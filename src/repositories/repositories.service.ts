@@ -2,7 +2,13 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { AxiosError, AxiosResponse } from 'axios';
-import { ICommit, IFile, IRepository } from './repositories.interface';
+import {
+  ICommit,
+  IFile,
+  IFileTree,
+  IRepository,
+  ReturnedIFile,
+} from './repositories.interface';
 import config from '../config';
 import { lastValueFrom } from 'rxjs';
 
@@ -63,8 +69,8 @@ export class RepositoriesService {
   }
 
   async getContentList(profile: string, repo: string): Promise<IFile[]> {
-    const { data }: AxiosResponse<IFile[]> = await lastValueFrom(
-      this.axios.get<IFile[]>(
+    const { data }: AxiosResponse<ReturnedIFile[]> = await lastValueFrom(
+      this.axios.get<ReturnedIFile[]>(
         `https://api.github.com/repos/${profile}/${repo}/contents`,
       ),
     ).catch((err: AxiosError) => {
@@ -75,15 +81,44 @@ export class RepositoriesService {
       throw new NotFoundException('Files not found');
     });
     if (data.length > 0) {
-      return data.map((file: IFile) => ({
+      return data.map((file: ReturnedIFile) => ({
         name: file.name,
         path: file.path,
         sha: file.sha,
         type: file.type,
-        downloadUrl: file.downloadUrl,
+        gitUrl: file.git_url,
         size: file.size,
       }));
     }
     throw new NotFoundException('Files not found');
+  }
+
+  async getCommitContentList(
+    profile: string,
+    repo: string,
+    commit: string,
+  ): Promise<IFile[]> {
+    const { data }: AxiosResponse<IFileTree> = await lastValueFrom(
+      this.axios.get<IFileTree>(
+        `https://api.github.com/repos/${profile}/${repo}/git/trees/${commit}`,
+      ),
+    ).catch((err: AxiosError) => {
+      Logger.error(
+        //  prettier-ignore
+        `Github Request Error Message: ${JSON.stringify(err.message)} stack: ${JSON.stringify(err.stack)}`,
+      );
+      throw new NotFoundException('Commit not found');
+    });
+    if (data.tree.length > 0) {
+      return data.tree.map((file: ReturnedIFile) => ({
+        name: file.name,
+        path: file.path,
+        sha: file.sha,
+        type: file.type,
+        gitUrl: file.url,
+        size: file.size,
+      }));
+    }
+    throw new NotFoundException('commit not found');
   }
 }

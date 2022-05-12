@@ -90,4 +90,22 @@ describe('endToEnd', () => {
       .expect(404);
     expect(response.status).toEqual(404);
   });
+
+  it('Fail when commit not found', async () => {
+    const result: AxiosResponse = {
+      data: {},
+      status: 404,
+      statusText: '',
+      headers: {},
+      config: {},
+    };
+    jest
+      .spyOn(httpService, 'get')
+      .mockImplementationOnce(() => of(result as unknown as any));
+
+    const response = await request(app.getHttpServer())
+      .get('/repositories/test/asdawasdw/23213546846')
+      .expect(404);
+    expect(response.status).toEqual(404);
+  });
 });

@@ -18,11 +18,26 @@ export interface ICommit {
   };
 }
 
+export interface ReturnedIFile {
+  name: string;
+  path: string;
+  sha: string;
+  type: string;
+  git_url: string;
+  url: string;
+  size: number;
+}
+
 export interface IFile {
   name: string;
   path: string;
   sha: string;
   type: string;
-  downloadUrl: string;
+  gitUrl: string;
   size: number;
+}
+
+export interface IFileTree {
+  sha: string;
+  tree: ReturnedIFile[];
 }
