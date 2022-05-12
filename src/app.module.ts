@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { RepositoriesModule } from './repositories/repositories.module';
 import * as Joi from 'joi';
 import config from './config';
 
@@ -13,11 +12,11 @@ import config from './config';
       isGlobal: true,
       load: [config],
       validationSchema: Joi.object({
+        PORT: Joi.number().required(),
         GIT_PROFILE: Joi.string().required(),
       }),
     }),
+    RepositoriesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
