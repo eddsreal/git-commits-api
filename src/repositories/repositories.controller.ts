@@ -8,4 +8,9 @@ export class RepositoriesController {
   getRepositories(@Param('profile') profile: string) {
     return this.repositoriesService.getRepositories(profile);
   }
+
+  @Get('/:profile/:repo')
+  getcommits(@Param('profile') profile: string, @Param('repo') repo: string) {
+    return this.repositoriesService.getCommits(profile, repo);
+  }
 }

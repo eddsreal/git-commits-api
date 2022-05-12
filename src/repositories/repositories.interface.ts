@@ -5,4 +5,15 @@ export interface IRepository {
   clone_url: string;
 }
 
-export type TRepository = Extract<IRepository, 'name' | 'url'>;
+interface IAuthor {
+  name: string;
+  email: string;
+}
+
+export interface ICommit {
+  sha: string;
+  commit: {
+    author: IAuthor;
+    message: string;
+  };
+}
