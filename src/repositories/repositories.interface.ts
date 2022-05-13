@@ -15,6 +15,10 @@ export interface ICommit {
   commit: {
     author: IAuthor;
     message: string;
+    tree: {
+      sha: string;
+      url: string;
+    };
   };
 }
 
