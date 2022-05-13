@@ -109,6 +109,7 @@ export class RepositoriesService {
       );
       throw new NotFoundException('Commit not found');
     });
+    console.log(data);
     if (data.tree.length > 0) {
       return data.tree.map((file: ReturnedIFile) => ({
         name: file.name,

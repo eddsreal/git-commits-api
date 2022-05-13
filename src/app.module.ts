@@ -13,7 +13,6 @@ import config from './config';
       load: [config],
       validationSchema: Joi.object({
         PORT: Joi.number().required(),
-        GIT_PROFILE: Joi.string().required(),
       }),
     }),
     RepositoriesModule,
