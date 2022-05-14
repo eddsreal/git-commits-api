@@ -33,7 +33,7 @@ export class RepositoriesService {
     if (data.length > 0) {
       return data.map((repo: IRepository) => ({
         name: repo.name,
-        url: repo.url,
+        description: repo.description,
         language: repo.language,
         clone_url: repo.clone_url,
       }));
@@ -118,7 +118,7 @@ export class RepositoriesService {
         name: file.name,
         path: file.path,
         sha: file.sha,
-        type: file.type,
+        type: file.type === 'blob' ? 'file' : 'folder',
         gitUrl: file.url,
         size: file.size,
       }));
